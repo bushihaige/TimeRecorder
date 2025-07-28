@@ -17,7 +17,9 @@ typedef enum {
 } FocusLevel;
 
 typedef enum {
-    TASK,
+    DEEPWORK,
+    SHALLOWWORK,
+    HAPPYWORK,
     DISTRACTION
 } Eventtype;
 
@@ -43,7 +45,9 @@ const char* focus_level_to_str(FocusLevel level) {
 
 const char* event_type_to_str(Eventtype type) {
     switch (type) {
-    case TASK: return "TASK";
+    case DEEPWORK: return "DEEPWORK";
+    case SHALLOWWORK: return "SHALLOWWORK";
+    case HAPPYWORK: return "HAPPYWORK";
     case DISTRACTION: return "DISTRACTION";
     default: return "UNKNOWN";
     }
@@ -76,25 +80,27 @@ void record_new_task() {
     int event_type_input;
     do {
         printf("Enter event type: \n");
-        printf("[1] Task\n");
-        printf("[2] Distraction\n");
+        printf("[1] Deepwork\n");
+        printf("[2] shallowwork\n");
+        printf("[3] happywork\n");
+        printf("[4] Distraction\n");
         printf("Your choice: ");
         event_type_input = getchar() - '0';
         while (getchar() != '\n');
-    } while (event_type_input != 1 && event_type_input != 2);
+    } while (event_type_input != 1 && event_type_input != 2 && event_type_input != 3 && event_type_input != 4);
 
     
-
+    char focus_input ;
     switch (event_type_input) {
     case 1:
         // 任务名输入（对TASK要求）
         printf("Enter event description: ");
         fgets(tasks[task_count].task_name, MAX_NAME_LENGTH, stdin);
         tasks[task_count].task_name[strcspn(tasks[task_count].task_name, "\n")] = '\0';
-        tasks[task_count].event = TASK;
-
+        tasks[task_count].event = DEEPWORK;
+        tasks[task_count].focus = HIGH;
         // 专注等级输入
-        char focus_input;
+        
         do {
             printf("Enter focus level (L-LOW, M-MEDIUM, H-HIGH): ");
             focus_input = toupper(getchar());
@@ -107,8 +113,32 @@ void record_new_task() {
         case 'H': tasks[task_count].focus = HIGH; break;
         }
         break;
-
     case 2:
+        // 任务名输入（对TASK要求）
+        printf("Enter event description: ");
+        fgets(tasks[task_count].task_name, MAX_NAME_LENGTH, stdin);
+        tasks[task_count].task_name[strcspn(tasks[task_count].task_name, "\n")] = '\0';
+        tasks[task_count].event = SHALLOWWORK;
+        
+        do {
+            printf("Enter focus level (L-LOW, M-MEDIUM): ");
+            focus_input = toupper(getchar());
+            while (getchar() != '\n');
+        } while (focus_input != 'L' && focus_input != 'M');
+
+        switch (focus_input) {
+        case 'L': tasks[task_count].focus = LOW; break;
+        case 'M': tasks[task_count].focus = MEDIUM; break;
+        }
+        break;
+    case 3:
+        printf("Enter event description: ");
+        fgets(tasks[task_count].task_name, MAX_NAME_LENGTH, stdin);
+        tasks[task_count].task_name[strcspn(tasks[task_count].task_name, "\n")] = '\0';
+        tasks[task_count].event = HAPPYWORK;
+        tasks[task_count].focus = LOW;  // 开心工作默认LOW专注度
+        break;
+    case 4:
         tasks[task_count].event = DISTRACTION;
         tasks[task_count].focus = LOW;  // 分心事件默认LOW专注度
         break;
